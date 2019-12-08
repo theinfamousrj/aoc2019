@@ -17,6 +17,19 @@ fn main() -> std::io::Result<()> {
         let x = l.parse::<f64>().unwrap();
         let y = round::floor(x/3.0, 0)-2.0;
 
+        // let's make this real gross
+        let mut done = false;
+        let mut z = y;
+        while !done {
+            if z <= 5.0 {
+                done = true;
+            } else {
+                z = round::floor(z/3.0, 0)-2.0;
+                sum += z;
+                // println!("{}", z);
+            }
+        }
+
         // println!("round({}/3)-2={}", x, y);
         sum += y;
     }
