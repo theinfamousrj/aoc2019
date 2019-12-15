@@ -15,6 +15,8 @@ fn main() -> std::io::Result<()> {
 
     let mut a: HashSet<String> = HashSet::new();
     let mut b: HashSet<String> = HashSet::new();
+    let mut a_dist: HashMap<String, i64> = HashMap::new();
+    let mut b_dist: HashMap<String, i64> = HashMap::new();
 
     let _wire = ".";
     let _overlap = ".";
@@ -31,6 +33,7 @@ fn main() -> std::io::Result<()> {
         // starting point
         let mut _x = 0;
         let mut _y = 0;
+        let mut _c = 0;
         // just a buch of moves
         for s in split {
             let (_dir, _mov) = split_direction_and_movement(s);
@@ -40,10 +43,14 @@ fn main() -> std::io::Result<()> {
                 let xz = _x+_mov.parse::<i64>().unwrap();
                 for x in _x..xz {
                     let key = format!("{},{}", x, _y);
+                    let key2 = format!("{},{}", x, _y);
+                    _c += 1;
                     if line_count == 2 {
                         b.insert(key);
+                        b_dist.insert(key2, _c);
                     } else {
                         a.insert(key);
+                        a_dist.insert(key2, _c);
                     }
                 }
                 _x = xz;
@@ -52,10 +59,14 @@ fn main() -> std::io::Result<()> {
                 let xz = _x-_mov.parse::<i64>().unwrap();
                 for x in xz.._x {
                     let key = format!("{},{}", x, _y);
+                    let key2 = format!("{},{}", x, _y);
+                    _c += 1;
                     if line_count == 2 {
                         b.insert(key);
+                        b_dist.insert(key2, _c);
                     } else {
                         a.insert(key);
+                        a_dist.insert(key2, _c);
                     }
                 }
                 _x = xz;
@@ -64,10 +75,14 @@ fn main() -> std::io::Result<()> {
                 let yz = _y+_mov.parse::<i64>().unwrap();
                 for y in _y..yz {
                     let key = format!("{},{}", _x, y);
+                    let key2 = format!("{},{}", _x, y);
+                    _c += 1;
                     if line_count == 2 {
                         b.insert(key);
+                        b_dist.insert(key2, _c);
                     } else {
                         a.insert(key);
+                        a_dist.insert(key2, _c);
                     }
                 }
                 _y = yz;
@@ -76,10 +91,14 @@ fn main() -> std::io::Result<()> {
                 let yz = _y-_mov.parse::<i64>().unwrap();
                 for y in yz.._y {
                     let key = format!("{},{}", _x, y);
+                    let key2 = format!("{},{}", _x, y);
+                    _c += 1;
                     if line_count == 2 {
                         b.insert(key);
+                        b_dist.insert(key2, _c);
                     } else {
                         a.insert(key);
+                        a_dist.insert(key2, _c);
                     }
                 }
                 _y = yz;
@@ -91,9 +110,10 @@ fn main() -> std::io::Result<()> {
     let _intersection = a.intersection(&b).collect::<Vec<&String>>();
 
     let mut _vec = vec![];
+    let mut _dists = vec![];
     for key in _intersection {
-        // do key math
-        println!("key: {}", key);
+        _dists.push(a_dist.get(key).unwrap() + b_dist.get(key).unwrap());
+        println!("key: {}, {}", key, a_dist.get(key).unwrap() + b_dist.get(key).unwrap());
         let mut sum = 0;
         let split = key.split(",");
         for s in split {
@@ -103,9 +123,11 @@ fn main() -> std::io::Result<()> {
     }
 
     _vec.sort();
+    _dists.sort();
 
     // println!("output: {:?}", _output);
     println!("vec: {:?}", _vec);
+    println!("dists: {:?}", _dists);
     // write_to_file(_output.to_string());
     Ok(())
 }
